@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Trái Tim</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 25%,
+          #f093fb 50%,
+          #4facfe 75%,
+          #667eea 100%
+        );
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        overflow: hidden;
+        position: relative;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      /* Particles floating */
+      body::before {
+        content: "💕";
+        position: absolute;
+        font-size: 30px;
+        animation: float 8s ease-in-out infinite;
+        opacity: 0.6;
+        top: 10%;
+        left: 15%;
+      }
+
+      body::after {
+        content: "💖";
+        position: absolute;
+        font-size: 25px;
+        animation: float 10s ease-in-out infinite;
+        opacity: 0.5;
+        top: 70%;
+        right: 20%;
+        animation-delay: 2s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-30px) rotate(10deg);
+        }
+        50% {
+          transform: translateY(-60px) rotate(-10deg);
+        }
+        75% {
+          transform: translateY(-30px) rotate(5deg);
+        }
+      }
+
+      .container {
+        text-align: center;
+        padding: 40px;
+        animation: fadeIn 1s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3em;
+        color: white;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+          0 0 40px rgba(255, 105, 180, 0.6);
+        margin-bottom: 40px;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+            0 0 40px rgba(255, 105, 180, 0.6);
+        }
+        to {
+          text-shadow: 0 0 30px rgba(255, 255, 255, 1),
+            0 0 60px rgba(255, 105, 180, 0.9);
+        }
+      }
+
+      .heart-frame {
+        position: relative;
+        width: 350px;
+        height: 350px;
+        margin: 0 auto 40px;
+        animation: heartBeat 1.5s ease-in-out infinite;
+      }
+
+      @keyframes heartBeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        10%,
+        30% {
+          transform: scale(1.05);
+        }
+        20%,
+        40% {
+          transform: scale(1);
+        }
+      }
+
+      .heart-border {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff6b9d, #c06c84, #f67280, #ff6b9d);
+        background-size: 300% 300%;
+        animation: borderGlow 3s ease infinite;
+        border-radius: 50%;
+        filter: blur(15px);
+        opacity: 0.7;
+        z-index: 0;
+      }
+
+      @keyframes borderGlow {
+        0%,
+        100% {
+          background-position: 0% 50%;
+          transform: scale(1);
+        }
+        50% {
+          background-position: 100% 50%;
+          transform: scale(1.1);
+        }
+      }
+
+      .qr-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px;
+        border-radius: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+          0 0 50px rgba(255, 105, 180, 0.5),
+          inset 0 0 20px rgba(255, 255, 255, 0.8);
+        z-index: 1;
+        animation: qrPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes qrPulse {
+        0%,
+        100% {
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+            0 0 50px rgba(255, 105, 180, 0.5),
+            inset 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+        50% {
+          box-shadow: 0 20px 80px rgba(0, 0, 0, 0.4),
+            0 0 80px rgba(255, 105, 180, 0.8),
+            inset 0 0 30px rgba(255, 255, 255, 1);
+        }
+      }
+
+      #qrcode {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #qrcode img {
+        border-radius: 15px;
+        animation: qrAppear 0.8s ease-out;
+      }
+
+      @keyframes qrAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.5) rotate(-10deg);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      .rose {
+        position: absolute;
+        font-size: 50px;
+        animation: roseFloat 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.6));
+      }
+
+      .rose-tl {
+        top: -20px;
+        left: -20px;
+        animation-delay: 0s;
+      }
+
+      .rose-tr {
+        top: -20px;
+        right: -20px;
+        animation-delay: 1s;
+      }
+
+      .rose-bl {
+        bottom: -20px;
+        left: -20px;
+        animation-delay: 2s;
+      }
+
+      .rose-br {
+        bottom: -20px;
+        right: -20px;
+        animation-delay: 3s;
+      }
+
+      @keyframes roseFloat {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-15px) rotate(10deg);
+        }
+        50% {
+          transform: translateY(-25px) rotate(-10deg);
+        }
+        75% {
+          transform: translateY(-15px) rotate(5deg);
+        }
+      }
+
+      .scan-message {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px 40px;
+        border-radius: 25px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        animation: messageSlide 1s ease-out 0.5s both;
+      }
+
+      @keyframes messageSlide {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .scan-message h3 {
+        color: #ff1744;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        animation: textShine 3s ease-in-out infinite;
+        background: linear-gradient(90deg, #ff1744, #ff6b9d, #ff1744);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      @keyframes textShine {
+        to {
+          background-position: 200% center;
+        }
+      }
+
+      .scan-message p {
+        color: #666;
+        font-size: 1.1em;
+        margin-top: 10px;
+      }
+
+      /* Sparkles */
+      .sparkle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: sparkleAnim 1.5s ease-out forwards;
+      }
+
+      @keyframes sparkleAnim {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: translate(var(--tx), var(--ty)) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--tx), var(--ty)) scale(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+        h1 {
+          font-size: 2em;
+        }
+        .heart-frame {
+          width: 280px;
+          height: 280px;
+        }
+        .qr-container {
+          padding: 20px;
+        }
+        .rose {
+          font-size: 35px;
+        }
+        .scan-message {
+          padding: 20px 25px;
+        }
+        .scan-message h3 {
+          font-size: 1.2em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>💝 Dành Cho Em 💝</h1>
+
+      <div class="heart-frame">
+        <div class="rose rose-tl">🌹</div>
+        <div class="rose rose-tr">🌹</div>
+        <div class="rose rose-bl">🌹</div>
+        <div class="rose rose-br">🌹</div>
+        <div class="heart-border"></div>
+        <div class="qr-container">
+          <div id="qrcode"></div>
+        </div>
+      </div>
+
+      <div class="scan-message">
+        <h3>📱 Hãy Quét Vào Đây</h3>
+        <h3>Đồ Handmade tui làm cho cậu ạ 🫶🏻🫵🏻</h3>
+        <p>Mở camera điện thoại quét vô đây ik</p>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+      // Tạo sparkles khi click
+      document.addEventListener("click", function (e) {
+        for (let i = 0; i < 8; i++) {
+          const sparkle = document.createElement("div");
+          sparkle.className = "sparkle";
+          const tx = (Math.random() - 0.5) * 100;
+          const ty = (Math.random() - 0.5) * 100;
+          sparkle.style.setProperty("--tx", tx + "px");
+          sparkle.style.setProperty("--ty", ty + "px");
+          sparkle.style.left = e.clientX + "px";
+          sparkle.style.top = e.clientY + "px";
+          document.body.appendChild(sparkle);
+
+          setTimeout(() => sparkle.remove(), 1500);
+        }
+      });
+
+      // Tạo QR code
+      window.addEventListener("load", function () {
+        const yourLink =
+          "https://huycodega.github.io/huycodega-thuanhlamchoem20-11/";
+
+        new QRCode(document.getElementById("qrcode"), {
+          text: yourLink,
+          width: 200,
+          height: 200,
+          colorDark: "#ff1744",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+      });
+    </script>
+  </body>
+</html>
